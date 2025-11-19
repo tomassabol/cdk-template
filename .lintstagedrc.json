@@ -1,0 +1,7 @@
+{
+  "*.ts": [
+    "tsc --noEmit --esModuleInterop --skipLibCheck --resolveJsonModule --target es2022 --module commonjs"
+  ],
+  "*.{js,ts,json}": ["eslint --no-ignore --max-warnings 0", "prettier --write"],
+  "*.md": ["prettier --write"]
+}

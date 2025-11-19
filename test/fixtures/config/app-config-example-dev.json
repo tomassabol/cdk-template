@@ -1,0 +1,14 @@
+{
+  "project": {
+    "name": "example-project",
+    "stage": "dev",
+    "version": "v1",
+    "account": "example-account",
+    "regions": ["eu-central-1", "eu-west-1"]
+  },
+  "stacks": {
+    "stack1": {
+      "name": "stack1"
+    }
+  }
+}
