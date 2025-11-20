@@ -83,6 +83,8 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
   public readonly env: cdk.Environment
   /** AppContext instance */
   public readonly appContext: AppContext
+  /** Base stack name without region suffix (for resource naming) */
+  public readonly baseStackName: string
   private commonHelper: ICommonHelper
   private commonGuardian: ICommonGuardian
   private serverlessImport: IServerlessImport
@@ -109,6 +111,12 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
     this.appContext = appContext
     this.stackConfig = stackConfig
     this.stackType = appContext.validateStackType(stackConfig.stackType)
+
+    // Extract base stack name (without region suffix) for resource naming
+    this.baseStackName =
+      stackConfig.baseStackName ||
+      stackConfig.shortStackName ||
+      stackConfig.name.replace(new RegExp(`-${this.region}$`), "")
     this.commonHelper = this.createCommonHelper()
     this.commonGuardian = this.createCommonGuardian()
     this.serverlessImport = this.createServerlessImport()
@@ -119,7 +127,7 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
   }
 
   /**
-   * Create stack from AppContext stack configuration
+   * Create stacks from AppContext stack configuration for all project regions
    *
    * See https://github.com/Microsoft/TypeScript/issues/5863
    */
@@ -129,7 +137,7 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
     appContext: AppContext,
     stackName: string,
     ...props: ExtractStackConstructorProps<C>
-  ): InstanceType<C> | null {
+  ): InstanceType<C>[] {
     const stackConfig = appContext.appConfig.stacks[stackName]
 
     const deployStack =
@@ -138,9 +146,20 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
       (stackConfig?.deploy as unknown as string) === "true" // Handle replacing with context from command line
 
     if (stackConfig && deployStack) {
-      return new this(appContext, stackConfig, ...props)
+      const stacks: InstanceType<C>[] = []
+      for (const region of appContext.projectRegions) {
+        // Create region-specific stacks with unique names
+        const regionStackConfig = {
+          ...stackConfig,
+          name: `${stackConfig.name}-${region}`,
+          updateRegionName: region,
+          baseStackName: stackConfig.name, // Store the base name for resource naming
+        }
+        stacks.push(new this(appContext, regionStackConfig, ...props))
+      }
+      return stacks
     } else {
-      return null // If stack is not defined then skip creation
+      return [] // If stack is not defined then return empty array
     }
   }
 
@@ -361,7 +380,7 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
     return new CommonHelper({
       construct: this,
       env: this.env,
-      stackName: this.stackName,
+      stackName: this.baseStackName, // Use base stack name for consistency
       stageName: this.stageName,
       appVersion: this.appVersion,
       stackType: this.stackType,
@@ -374,7 +393,7 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
     return new CommonGuardian({
       construct: this,
       env: this.env,
-      stackName: this.stackName,
+      stackName: this.baseStackName, // Use base stack name for resource naming
       stageName: this.stageName,
       appVersion: this.appVersion,
       stackType: this.stackType,
@@ -388,7 +407,7 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
     return new ServerlessImport({
       construct: this,
       env: this.env,
-      stackName: this.stackName,
+      stackName: this.baseStackName, // Use base stack name for consistency
       stageName: this.stageName,
       appVersion: this.appVersion,
       stackType: this.stackType,

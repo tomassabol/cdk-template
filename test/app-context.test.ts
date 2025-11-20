@@ -101,8 +101,9 @@ describe("app-context", () => {
   it("Config Version 1 should have muted function type for resource names and versioning info", () => {
     const config = createAppConfigFixture()
     const context = AppContext.fromConfig(config)
-    const stack = BaseStack.fromAppContext(context, "stack1")
-    assert(stack, "Cannot create stack") // To avoid TS type check issue for the next line
+    const stacks = BaseStack.fromAppContext(context, "stack1")
+    assert(stacks.length > 0, "Cannot create stacks")
+    const stack = stacks[0] // Use first stack for testing
     expect(resourceName(stack, "test", "function")).toBe(
       "example-project-stack1-v1-dev-test"
     )
@@ -111,8 +112,9 @@ describe("app-context", () => {
   it("Config Version 2 should have muted function type for resource names and versioning info", () => {
     const config = createAppConfigFixture({ configVersion: "2" })
     const context = AppContext.fromConfig(config)
-    const stack = BaseStack.fromAppContext(context, "stack1")
-    assert(stack, "Cannot create stack") // To avoid TS type check issue for the next line
+    const stacks = BaseStack.fromAppContext(context, "stack1")
+    assert(stacks.length > 0, "Cannot create stacks")
+    const stack = stacks[0] // Use first stack for testing
     expect(resourceName(stack, "test", "function")).toBe(
       "example-project-stack1-dev-test-function"
     )

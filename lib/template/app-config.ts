@@ -51,6 +51,8 @@ export interface StackConfig {
   name: string
   /** Short stack name stores original stack Name value before prefixing stack name with project and version */
   shortStackName?: string
+  /** Base stack name without region suffix (for resource naming) */
+  baseStackName?: string
   /** Optionally the deployment can be disabled by setting Deploy to false */
   deploy?: boolean
   /** Override region with provided value */

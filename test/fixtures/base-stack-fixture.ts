@@ -4,7 +4,7 @@ import { createAppContextFixture } from "./app-context-fixture"
 
 export function createBaseStackFixture(): BaseStack {
   const appContext = createAppContextFixture()
-  const stack = BaseStack.fromAppContext(appContext, "stack1")
-  assert(stack, "Cannot create base stack fixture")
-  return stack
+  const stacks = BaseStack.fromAppContext(appContext, "stack1")
+  assert(stacks.length > 0, "Cannot create base stack fixture")
+  return stacks[0] // Return first stack for backward compatibility
 }

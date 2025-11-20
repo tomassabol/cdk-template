@@ -31,11 +31,12 @@ export function stageOf(scope: Construct): string {
  */
 
 export function resourceName(scope: Construct, name: string, type: string) {
-  const { appContext, stackName } = BaseStack.of(scope)
+  const stack = BaseStack.of(scope)
+  const { appContext } = stack
 
   return appContext.composeResourceName({
     baseName: name,
     resourceType: type,
-    stackName,
+    stackName: stack.baseStackName, // Use base stack name without region suffix
   })
 }

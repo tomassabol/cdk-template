@@ -21,7 +21,7 @@
 import assert from "assert"
 import * as fs from "fs"
 import * as cdk from "aws-cdk-lib"
-import { AppConfig, ProjectConfig, StackType } from "./app-config"
+import { AppConfig, ProjectConfig, StackConfig, StackType } from "./app-config"
 import {
   CommonCoerce,
   ComposeResourceNameParams,
@@ -638,6 +638,17 @@ export class AppContext implements IAppContext {
       tagPrefix + "project-stage",
       `${this.projectName}-${this.stageName}`
     )
+  }
+
+  public static getRegionStackConfig(
+    baseStackConfig: StackConfig,
+    region: string
+  ): StackConfig {
+    return {
+      ...baseStackConfig,
+      name: `${baseStackConfig.name}-${region}`,
+      updateRegionName: region,
+    }
   }
 
   public static fromConfig(appConfig: AppConfig): AppContext {

@@ -1,4 +1,3 @@
-import assert from "assert"
 import { Template } from "aws-cdk-lib/assertions"
 import { AppContext, BaseConstruct, BaseStack, StackConfig } from "../../lib"
 import { createAppContextFixture } from "../fixtures/app-context-fixture"
@@ -67,14 +66,26 @@ describe("base-stack", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const appContextExposed = appContext as any
     appContextExposed.appConfig = {
+      project: appContext.appConfig.project, // Keep the project config
       stacks: { example: { name: "example" } },
     }
-    const stack = ExampleStack.fromAppContext(appContext, "example", 1)
+    const stacks = ExampleStack.fromAppContext(appContext, "example", 1)
 
-    expect(stack).toBeDefined()
-    assert(stack)
+    expect(stacks).toBeDefined()
+    expect(stacks).toHaveLength(2) // Two regions in fixture: eu-central-1 and eu-west-1
+    expect(stacks[0]).toBeDefined()
+    expect(stacks[1]).toBeDefined()
 
-    const template = Template.fromStack(stack)
+    // Test that stacks have region-suffixed names for uniqueness
+    expect(stacks[0].stackConfig.name).toBe("example-eu-central-1")
+    expect(stacks[1].stackConfig.name).toBe("example-eu-west-1")
+    expect(stacks[0].stackConfig.updateRegionName).toBe("eu-central-1")
+    expect(stacks[1].stackConfig.updateRegionName).toBe("eu-west-1")
+    // But baseStackName should not have region suffix for resource naming
+    expect(stacks[0].baseStackName).toBe("example")
+    expect(stacks[1].baseStackName).toBe("example")
+
+    const template = Template.fromStack(stacks[0])
     template.resourcePropertiesCountIs("AWS::Events::Rule", {}, 1)
   })
 
@@ -86,9 +97,9 @@ describe("base-stack", () => {
     appContextExposed.appConfig = {
       stacks: { other: { name: "other" } },
     }
-    const stack = ExampleStack.fromAppContext(appContext, "example", 1)
+    const stacks = ExampleStack.fromAppContext(appContext, "example", 1)
 
-    expect(stack).toBeNull()
+    expect(stacks).toEqual([])
   })
 })
 
