@@ -196,9 +196,7 @@ export class BaseStack extends cdk.Stack implements IBaseStack {
       this._powertoolsLayer = lambda.LayerVersion.fromLayerVersionArn(
         this,
         "LambdaPowertoolsLayer",
-        `arn:aws:lambda:${
-          cdk.Stack.of(this).region
-        }:094274105915:layer:AWSLambdaPowertoolsTypeScript:40`
+        `arn:aws:lambda:${this.region}:094274105915:layer:AWSLambdaPowertoolsTypeScriptV2:40`
       )
     }
     return this._powertoolsLayer
