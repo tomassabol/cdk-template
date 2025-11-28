@@ -1,8 +1,8 @@
 {
   "extends": "@tsconfig/node22",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "declaration": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
