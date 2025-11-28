@@ -1,6 +1,6 @@
 {
   "name": "@tomassabol/cdk-template",
-  "version": "2.18.1",
+  "version": "2.18.2",
   "description": "tomassabol CDK Template",
   "main": "dist/index.js",
   "directories": {
@@ -27,6 +27,11 @@
   },
   "author": "hi@tomassabol.com",
   "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomassabol/cdk-template.git"
+  },
+  "docs": "https://github.com/tomassabol/cdk-template#readme",
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
     "@types/aws-lambda": "^8.10.106",
