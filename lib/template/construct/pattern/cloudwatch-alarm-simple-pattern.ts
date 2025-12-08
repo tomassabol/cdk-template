@@ -24,7 +24,6 @@ export class CloudWatchAlarmSimplePattern extends Construct {
     this.alarmAction = props.alarmAction
     this.defaultAlarmOptions = {
       threshold: 0,
-      evaluationPeriods: 1,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       ...props.defaultAlarmOptions,
     }
@@ -41,7 +40,6 @@ export class CloudWatchAlarmSimplePattern extends Construct {
   ): this {
     metric
       .createAlarm(this, name, {
-        alarmName: resourceName(this, name, "alarm"),
         ...this.defaultAlarmOptions,
         ...options,
       })

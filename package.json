@@ -1,6 +1,6 @@
 {
   "name": "@tomassabol/cdk-template",
-  "version": "2.18.3-beta.1",
+  "version": "2.18.4",
   "description": "tomassabol CDK Template",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -62,5 +62,9 @@
   },
   "dependencies": {
     "aws-lambda": "^1.0.7"
+  },
+  "overrides": {
+    "braces": "^3.0.3",
+    "micromatch": "^4.0.8"
   }
 }
